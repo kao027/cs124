@@ -2,70 +2,53 @@
 #include <vector>
 #include <queue>
 #include <algorithm> 
+#include "mst.h"
 
-using namespace std;
+// UnionFind methods
+UnionFind::UnionFind(int size) {
+    parent.resize(size);
+    rank.resize(size, 0);
+    for (int i = 0; i < size; i++) {
+        parent[i] = i;
+    }
+}
 
+int UnionFind::find(int i) {
+    if (parent[i] != i) {
+        parent[i] = find(parent[i]);
+    }
+    return parent[i];
+}
 
+void UnionFind::merge(int x, int y) {
+    int rootX = find(x);
+    int rootY = find(y);
 
-//union find
-
-struct UnionFind {
-    vector<int> parent, rank;
-
-    // Constructor
-    UnionFind(int size) {
-        parent.resize(size);
-        rank.resize(size, 0);
-      
-        // Initialize parent array
-        for (int i = 0; i < size; i++) {
-            parent[i] = i;
+    if (rootX != rootY) {
+        if (rank[rootX] > rank[rootY]) {
+            parent[rootY] = rootX;
+        } else if (rank[rootX] < rank[rootY]) {
+            parent[rootX] = rootY;
+        } else {
+            parent[rootY] = rootX;
+            rank[rootX]++;
         }
     }
+}
 
 
-    // Find the representative (root) of the
-    // set that includes element i
-    int find(int i) {
-      
-        if (parent[i] != i) {
-            parent[i] = find(parent[i]); 
-        }
-        return parent[i];
-    }
-    // Unite (merge) the set that includes element 
-    // i and the set that includes element j
-    void merge(int i, int j) {
-      
-        // Representative of set containing i
-        int rootI = find(i);
-      
-        // Representative of set containing j
-        int rootJ = find(j);
-
-        if (rank[rootI] > rank[rootJ]){
-            parent[rootJ ] = rootI;
-        }
-        else{
-            parent[rootI] = rootJ;
-        }
-
-        if (rank[rootI] == rank[rootJ]){
-            rank[rootJ ]++;
-        }
-    }
-};
 
 //Kruskal Algorithm
 
-int Kruskal(int size, vector<vector<pair<int, int>>>& adj){
+float kruskal(Graph& adj){
     //  Initialize result
-    int mst_wt = 0; 
+    float mst_wt = 0; 
 
+    int size = adj.size(); 
     // Create V single item sets
     UnionFind set(size);
 
-    vector<pair<int, pair<int, int>>> edges;
+    vector<pair<float, pair<int, int>>> edges;
 
     // Extract edges from adjacency list
     for (int u = 0; u < size; u++) {
@@ -80,7 +63,7 @@ int Kruskal(int size, vector<vector<pair<int, int>>>& adj){
 
     // iterate through the edges
     for (auto& edge : edges) {
-        int weight = edge.first;
+        float weight = edge.first;
         int u = edge.second.first;
         int v = edge.second.second;
 
@@ -99,15 +82,16 @@ int Kruskal(int size, vector<vector<pair<int, int>>>& adj){
 }
 
 // Prims
-int prim(int V_size, int E_size,  vector<vector<pair<int, int>>>& adj){
+float prim(Graph& adj){
 
     priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
     
+    int size = adj.size(); 
     // keep track of visited vertices
-    vector<bool> visited(V_size, false);
+    vector<bool> visited(size, false);
 
     // variable to store the result
-    int res = 0;
+    float res = 0;
 
     pq.push({0,0});
 
@@ -139,6 +123,3 @@ int prim(int V_size, int E_size,  vector<vector<pair<int, int>>>& adj){
 
 }
 
-int main(){
-    return 0;
-}
