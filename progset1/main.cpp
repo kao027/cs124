@@ -37,5 +37,7 @@ int main(){
     generateComplete(graph);
     float mstWeight = kruskal(graph); 
     std::cout << "Minimum Spanning Tree Weight (Kruskal): " << mstWeight << std::endl;
+    mstWeight = prim(graph); 
+    std::cout << "Minimum Spanning Tree Weight (Prim): " << mstWeight << std::endl;
     displayAdjList(graph);
 }

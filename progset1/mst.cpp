@@ -84,7 +84,7 @@ float kruskal(Graph& adj){
 // Prims
 float prim(Graph& adj){
 
-    priority_queue<pair<int,int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+    priority_queue<pair<float,int>, vector<pair<float,int>>, greater<pair<float,int>>> pq;
     
     int size = adj.size(); 
     // keep track of visited vertices
@@ -100,7 +100,7 @@ float prim(Graph& adj){
         auto p = pq.top();
         pq.pop();
         
-        int wt = p.first;  // Weight of the edge
+        float wt = p.first;  // Weight of the edge
         int u = p.second;  // Vertex connected to the edge
         
         if(visited[u] == true){
@@ -113,7 +113,7 @@ float prim(Graph& adj){
         // Explore the adjacent vertices
         for(auto v : adj[u]){
             int vertex = v.first;
-            int weight = v.second;
+            float weight = v.second;
             if(!visited[vertex]){
                 pq.push({weight, vertex});
             }
