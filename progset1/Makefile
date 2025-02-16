@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -std=c++17 -Wall -Wextra -O2
 
 # Source files
-SRCS = pg1.cpp mst.cpp
+SRCS = main.cpp mst.cpp
 HEADERS = mst.h
 
 # Output executable
