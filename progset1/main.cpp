@@ -3,7 +3,7 @@
 #include <iostream>
 #include "mst.h"
 
-int n = 3; // number of nodes
+int n = 8; // number of nodes
 void addEdge(Graph &adj, int u, int v, float w){
     adj[u].push_back({v,w});
     adj[v].push_back({u,w}); // because undirected
@@ -20,9 +20,27 @@ void generateComplete(Graph &adj){ //
     }
 }
 
+void generateHypercube(Graph &adj){
+    srand(time(0));
+    for (int u = 0; u < n; u++){
+        for (int v = u+1; v<n; v++){
+            if (((v-u) & (v-u-1))==0){
+                //std::cout << v << "-" << u << "= " << v-u << "\n";
+                float newWeight = (float)rand() / RAND_MAX;
+                addEdge(adj, u, v, newWeight);
+            } else {
+                //std::cout << "WRONG: " << v << "-" << u << "= " << v-u << "\n";
+            }
+        }
+    }
+}
+
 //graph type #3
 void generateUnitSquare(Graph &adj){
-    
+    srand(time(0));
+    for (int u = 0; u < n; u++){
+        float x = (float)rand() / RAND_MAX;
+    }
 }
 
 void displayAdjList(Graph &adj) {
@@ -39,7 +57,8 @@ void displayAdjList(Graph &adj) {
 
 int main(){
     Graph graph(n);
-    generateComplete(graph);
+    //generateComplete(graph);
+    generateHypercube(graph);
     float mstWeight = kruskal(graph); 
     std::cout << "Minimum Spanning Tree Weight (Kruskal): " << mstWeight << std::endl;
     mstWeight = prim(graph); 
