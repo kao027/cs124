@@ -20,6 +20,11 @@ void generateComplete(Graph &adj){ //
     }
 }
 
+//graph type #3
+void generateUnitSquare(Graph &adj){
+    
+}
+
 void displayAdjList(Graph &adj) {
     for (size_t i = 0; i < adj.size(); i++) {
         std::cout << i << ": "; 
