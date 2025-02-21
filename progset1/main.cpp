@@ -2,15 +2,16 @@
 #include <vector>
 #include <iostream>
 #include "mst.h"
+#include <math.h>
 
-int n = 8; // number of nodes
+int n = 4; // number of nodes
 void addEdge(Graph &adj, int u, int v, float w){
     adj[u].push_back({v,w});
     adj[v].push_back({u,w}); // because undirected
 }
 
 //graph type #1
-void generateComplete(Graph &adj){ //
+void generateComplete(Graph &adj){
     srand(time(0));
     for (int u = 0; u < n; u++){
         for (int v = u+1; v < n; v++){
@@ -20,16 +21,14 @@ void generateComplete(Graph &adj){ //
     }
 }
 
+//graph type #2
 void generateHypercube(Graph &adj){
     srand(time(0));
     for (int u = 0; u < n; u++){
         for (int v = u+1; v<n; v++){
             if (((v-u) & (v-u-1))==0){
-                //std::cout << v << "-" << u << "= " << v-u << "\n";
                 float newWeight = (float)rand() / RAND_MAX;
                 addEdge(adj, u, v, newWeight);
-            } else {
-                //std::cout << "WRONG: " << v << "-" << u << "= " << v-u << "\n";
             }
         }
     }
@@ -39,7 +38,16 @@ void generateHypercube(Graph &adj){
 void generateUnitSquare(Graph &adj){
     srand(time(0));
     for (int u = 0; u < n; u++){
-        float x = (float)rand() / RAND_MAX;
+        float ux = (float)rand() / RAND_MAX;
+        float uy = (float)rand() / RAND_MAX;
+        for (int v = u+1; v<n; v++){
+            float vx = (float)rand() / RAND_MAX;
+            float vy = (float)rand() / RAND_MAX;
+            float euclidWeight = sqrt(pow(vx-ux, 2)+pow(vy-uy, 2));
+            //std::cout << "(" << vx << "," << vy << ") - " << "(" << ux << "," << uy << ") = " << euclidWeight << "\n";
+            addEdge(adj, u, v, euclidWeight);
+        }
+
     }
 }
 
@@ -58,7 +66,7 @@ void displayAdjList(Graph &adj) {
 int main(){
     Graph graph(n);
     //generateComplete(graph);
-    generateHypercube(graph);
+    generateUnitSquare(graph);
     float mstWeight = kruskal(graph); 
     std::cout << "Minimum Spanning Tree Weight (Kruskal): " << mstWeight << std::endl;
     mstWeight = prim(graph); 
