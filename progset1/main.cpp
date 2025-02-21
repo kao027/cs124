@@ -37,19 +37,28 @@ void generateHypercube(Graph &adj){
 //graph type #3
 void generateUnitSquare(Graph &adj){
     srand(time(0));
+     std::vector<std::pair<float,float>> coordinates(n);
+    for (int i = 0; i < n; i++){
+       float x = (float)rand() / RAND_MAX;
+       float y = (float)rand() / RAND_MAX;
+       coordinates[i] = {x,y};
+       //std::cout << "(" << coordinates[i].first << ", " << coordinates[i].second << ") " << "\n";
+    }
     for (int u = 0; u < n; u++){
-        float ux = (float)rand() / RAND_MAX;
-        float uy = (float)rand() / RAND_MAX;
-        for (int v = u+1; v<n; v++){
-            float vx = (float)rand() / RAND_MAX;
-            float vy = (float)rand() / RAND_MAX;
+        float ux = coordinates[u].first;
+        float uy = coordinates[u].second;
+        for (int v = u+1; v < n; v++){
+            float vx = coordinates[v].first;
+            float vy = coordinates[v].second;
             float euclidWeight = sqrt(pow(vx-ux, 2)+pow(vy-uy, 2));
-            //std::cout << "(" << vx << "," << vy << ") - " << "(" << ux << "," << uy << ") = " << euclidWeight << "\n";
             addEdge(adj, u, v, euclidWeight);
         }
-
     }
+
 }
+
+//graph type #4
+
 
 void displayAdjList(Graph &adj) {
     for (size_t i = 0; i < adj.size(); i++) {
@@ -67,7 +76,7 @@ int main(){
     Graph graph(n);
     //generateComplete(graph);
     generateUnitSquare(graph);
-    float mstWeight = kruskal(graph); 
+   float mstWeight = kruskal(graph); 
     std::cout << "Minimum Spanning Tree Weight (Kruskal): " << mstWeight << std::endl;
     mstWeight = prim(graph); 
     std::cout << "Minimum Spanning Tree Weight (Prim): " << mstWeight << std::endl;
