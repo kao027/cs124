@@ -3,6 +3,7 @@
 #include <queue>
 #include <algorithm> 
 #include "mst.h"
+#include <utility>
 
 // UnionFind methods
 UnionFind::UnionFind(int size) {
@@ -37,6 +38,75 @@ void UnionFind::merge(int x, int y) {
 }
 
 
+// Priority Queue
+// Heapify is a helper function to mantain heap
+void Heap::heapify(int n){
+    int smallest = n;
+    int left = 2 * n + 1;
+    int right = 2 * n + 2;
+    int size = array.size();
+    if (left < size && array[left].first < array[smallest].first){
+        smallest = left;
+    }
+    if (right < size && array[right].first < array[smallest].first){
+        smallest = right;
+    }
+    if (smallest != n){
+        //Swap
+        w_pair temp = array[n];
+        array[n] = array[smallest];
+        array[smallest] = temp;
+        heapify(smallest);
+    }
+}   
+
+w_pair Heap::peek(){
+    if (array.size() == 0) {
+        throw std::out_of_range("Heap is empty");
+    }
+    return array.front();
+}
+
+w_pair Heap::extractMin(){
+    size_t size = array.size();
+    if (size <= 0){
+        throw std::out_of_range("Empty Heap");
+    }
+    w_pair min = array[0];
+    // replace root with last element of a vector
+    array[0] = array[size - 1];
+    array.pop_back();
+    if (array.size() > 0) {
+        heapify(0);
+    }
+    return min;
+}
+
+void Heap::insert(w_pair key){
+    array.push_back(key);
+    // Keep track of the index of v
+    int n = array.size()-1;
+    while (n != 0){
+        int parent = (n-1) / 2;
+        if (array[parent].first <= array[n].first) {
+            break;
+        }
+        //Swap
+        w_pair temp = array[parent];
+        array[parent] = array[n];
+        array[n] = temp;
+
+        n = parent; 
+    }
+}
+
+// Print the heap elements
+void Heap::printHeap() const
+{
+    for (const auto& [weight, val] : array)
+        cout << "(" << weight << ", " << val << ")";
+    cout << endl;
+}
 
 //Kruskal Algorithm
 
@@ -84,7 +154,7 @@ float kruskal(Graph& adj){
 // Prims
 float prim(Graph& adj){
 
-    priority_queue<pair<float,int>, vector<pair<float,int>>, greater<pair<float,int>>> pq;
+    Heap pq;
     
     int size = adj.size(); 
     // keep track of visited vertices
@@ -93,12 +163,12 @@ float prim(Graph& adj){
     // variable to store the result
     float res = 0;
 
-    pq.push({0,0});
+    pq.insert({0,0});
 
     // Perform Prim's algorithm to find the Minimum Spanning Tree
     while(!pq.empty()){
-        auto p = pq.top();
-        pq.pop();
+        auto p = pq.peek();
+        pq.extractMin();
         
         float wt = p.first;  // Weight of the edge
         int u = p.second;  // Vertex connected to the edge
@@ -115,7 +185,7 @@ float prim(Graph& adj){
             int vertex = v.first;
             float weight = v.second;
             if(!visited[vertex]){
-                pq.push({weight, vertex});
+                pq.insert({weight, vertex});
             }
         }
     }
