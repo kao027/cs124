@@ -107,7 +107,7 @@ void generate4D(Graph &adj){
             float vx = coordinates[v].x;
             float vy = coordinates[v].y;
             float vz = coordinates[v].z;
-            float vw = coordinates[u].w;
+            float vw = coordinates[v].w;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy)+(vz-uz)*(vz-uz)+(vw-uw)*(vw-uw));
             addEdge(adj, u, v, euclidWeight);
         }
