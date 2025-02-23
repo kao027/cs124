@@ -145,29 +145,48 @@ void generateGraph(Graph &adj, int n, int dimension){
 }
 
 // Experiment Functions
-void runExperiment(int numpoints, int numtrials, int dimension) {
+void runExperiment(int numpoints, int numtrials, int dimension, int algo) {
+
     float totalWeight = 0.0;
+
+    // Start timing
+    auto start = std::chrono::high_resolution_clock::now();
+    
     for (int i = 0; i < numtrials; i++) {
         Graph graph(numpoints);
         generateGraph(graph, numpoints, dimension);
-        totalWeight += kruskal(graph);
+        if (algo == 0){
+            totalWeight += prim(graph);
+        }
+        if (algo == 1){
+            totalWeight += kruskal(graph);
+        }
     }
+
+    // End timer
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> elapsed = end - start;
+
     float avgWeight = totalWeight / numtrials;
     std::cout << "n=" << numpoints << " trials=" << numtrials
-              << " dimension=" << dimension << " avg_weight=" << avgWeight << std::endl;
+              << " dimension=" << dimension 
+              << " avg_weight=" << avgWeight 
+              << " time_taken=" << elapsed.count() << " seconds" << std::endl;
 }
 
 void completeExperiment(int numtrials, int dimension) {
     std::vector<int> complete_graph_sizes = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
     for (int n : complete_graph_sizes) {
-        runExperiment(n, numtrials, dimension); 
+        // Run prim's algorithm
+        runExperiment(n, numtrials, dimension, 1); 
     }
 }
 
 void hypercubeExperiment(int numtrials) {
     std::vector<int> hypercube_sizes = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144};
     for (int n : hypercube_sizes) {
-        runExperiment(n, numtrials, 1); 
+        // Run kruskal
+        runExperiment(n, numtrials, 1, 1); 
     }
 }
 
