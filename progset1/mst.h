@@ -1,5 +1,5 @@
-#ifndef PG1_H
-#define PG1_H
+#ifndef MST_H
+#define MST_H
 typedef std::vector<std::vector<std::pair<int, float>>> Graph;
 // weight, vertex pair
 using w_pair = std::pair<float, int>;

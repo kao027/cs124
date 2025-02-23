@@ -3,6 +3,7 @@
 #include <iostream>
 #include "mst.h"
 #include <math.h>
+#include <cstdlib>
 
 void addEdge(Graph &adj, int u, int v, float w){
     adj[u].push_back({v,w});
@@ -143,31 +144,93 @@ void generateGraph(Graph &adj, int n, int dimension){
     }
 }
 
+// Experiment Functions
+void runExperiment(int numpoints, int numtrials, int dimension) {
+    float totalWeight = 0.0;
+    for (int i = 0; i < numtrials; i++) {
+        Graph graph(numpoints);
+        generateGraph(graph, numpoints, dimension);
+        totalWeight += kruskal(graph);
+    }
+    float avgWeight = totalWeight / numtrials;
+    std::cout << "n=" << numpoints << " trials=" << numtrials
+              << " dimension=" << dimension << " avg_weight=" << avgWeight << std::endl;
+}
+
+void completeExperiment(int numtrials, int dimension) {
+    std::vector<int> complete_graph_sizes = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
+    for (int n : complete_graph_sizes) {
+        runExperiment(n, numtrials, dimension); 
+    }
+}
+
+void hypercubeExperiment(int numtrials) {
+    std::vector<int> hypercube_sizes = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536, 131072, 262144};
+    for (int n : hypercube_sizes) {
+        runExperiment(n, numtrials, 1); 
+    }
+}
+
 // Compile with make then ./randmst 0 numpoints numtrials dimension
+// To run experiments ./randmst 1 numpoints numtrials dimension
 
 int main(int argc, char* argv[]) {
-    if (argc != 5) {
-        std::cerr << "Usage: ./randmst 0 numpoints numtrials dimension" << std::endl;
+    if (argc < 4) {
+        std::cerr << "Usage: ./randmst <mode> <numpoints> <numtrials> <dimension>" << std::endl;
         return 1;
     }
 
-    int numpoints = std::atoi(argv[2]);
-    int numtrials = std::atoi(argv[3]);
-    int dimension = std::atoi(argv[4]); 
+    int mode = std::atoi(argv[1]);
+    // Experiments
+    if (mode == 1) {
+        if (argc != 4) {
+            std::cerr << "Usage: ./randmst 1 <numtrials> <dimension>" << std::endl;
+            return 1;
+        }
+        
+        int numtrials = std::atoi(argv[2]);
+        int dimension = std::atoi(argv[3]);
+        
+        if (dimension == 1) {
+            std::cout << "Running hypercube graph experiments..." << std::endl;
+            hypercubeExperiment(numtrials);
+        } else if (dimension >= 0 && dimension <= 4) {
+            std::cout << "Running complete graph experiments..." << std::endl;
+            completeExperiment(numtrials, dimension);
+        } else{
+            std::cerr << "Invalid dimension! Use 0-4" << std::endl;
+            return 1;
+        }
+    // MST calculation  
+    } else if (mode == 0) {
+        if (argc != 5) {
+            std::cerr << "Usage: ./randmst 0 <numpoints> <numtrials> <dimension>" << std::endl;
+            return 1;
+        }
+        
+        int numpoints = std::atoi(argv[2]);
+        int numtrials = std::atoi(argv[3]);
+        int dimension = std::atoi(argv[4]);
 
-  float kruskalWeight = 0.0;
-  float primWeight = 0.0;
-  for (int i = 0; i < numtrials; i++) {
-      Graph graph(numpoints);
-      generateGraph(graph, numpoints, dimension);
-      kruskalWeight += kruskal(graph);
-      primWeight += prim(graph);
-  }
+        float kruskalWeight = 0.0;
+        float primWeight = 0.0;
+        for (int i = 0; i < numtrials; i++) {
+            Graph graph(numpoints);
+            generateGraph(graph, numpoints, dimension);
+            kruskalWeight += kruskal(graph);
+            primWeight += prim(graph);
+        }
 
-  std::cout << "Average MST Weight using Kruskal: " << (kruskalWeight / numtrials) << "\n"
-            << "Average MST Weight using Prim: " << (primWeight / numtrials) << "\n"
-            << "Number of Points: " << numpoints << "\n"
-            << "Number of Trials: " << numtrials << "\n"
-            << "Graph Dimension: " << dimension << std::endl;
-  return 0;
+        std::cout << "Average MST Weight using Kruskal: " << (kruskalWeight / numtrials) << "\n"
+                  << "Average MST Weight using Prim: " << (primWeight / numtrials) << "\n"
+                  << "Number of Points: " << numpoints << "\n"
+                  << "Number of Trials: " << numtrials << "\n"
+                  << "Graph Dimension: " << dimension << std::endl;
+
+    } else {
+        std::cerr << "Invalid mode! Use 0 for MST calculation or 1 for experiments." << std::endl;
+        return 1;
+    }
+
+    return 0;
 }
