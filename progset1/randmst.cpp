@@ -191,7 +191,7 @@ void hypercubeExperiment(int numtrials) {
 }
 
 // Compile with make then ./randmst 0 numpoints numtrials dimension
-// To run experiments ./randmst 1 numpoints numtrials dimension
+// To run experiments ./randmst 1 numtrials dimension
 
 int main(int argc, char* argv[]) {
     if (argc < 4) {
