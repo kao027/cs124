@@ -4,14 +4,13 @@
 #include "mst.h"
 #include <math.h>
 
-int n = 5; // number of nodes
 void addEdge(Graph &adj, int u, int v, float w){
     adj[u].push_back({v,w});
     adj[v].push_back({u,w}); // because undirected
 }
 
 //graph type #1
-void generateComplete(Graph &adj){
+void generateComplete(Graph &adj, int n){
     srand(time(0));
     for (int u = 0; u < n; u++){
         for (int v = u+1; v < n; v++){
@@ -22,7 +21,7 @@ void generateComplete(Graph &adj){
 }
 
 //graph type #2
-void generateHypercube(Graph &adj){
+void generateHypercube(Graph &adj, int n){
     srand(time(0));
     for (int u = 0; u < n; u++){
         for (int v = u+1; v<n; v++){
@@ -35,7 +34,7 @@ void generateHypercube(Graph &adj){
 }
 
 //graph type #3
-void generateUnitSquare(Graph &adj){
+void generateUnitSquare(Graph &adj, int n){
     srand(time(0));
     std::vector<std::pair<float,float>> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
@@ -61,7 +60,8 @@ struct unitPoint { // no tuples in C :(
     float x, y, z;
 };
 
-void generate3D(Graph &adj){
+void generate3D(Graph &adj, int n){
+    srand(time(0));
     std::vector<unitPoint> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
         float x = (float)rand() / RAND_MAX;
@@ -88,7 +88,8 @@ struct hyperPoint {
     float x,y,z,w;
 };
 
-void generate4D(Graph &adj){
+void generate4D(Graph &adj, int n){
+    srand(time(0));
     std::vector<hyperPoint> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
         float x = (float)rand() / RAND_MAX;
@@ -114,16 +115,6 @@ void generate4D(Graph &adj){
 
 }
 
-void generateHyperUnit(Graph &adj, float dimen){
-    srand(time(0));
-    if (dimen==3){
-        generate3D(adj);
-    } else if (dimen==4){
-        generate4D(adj);
-    } else {
-        std::cout << "  ERROR: Please select a 3D or 4D graph.\n";
-    }
-}
 
 void displayAdjList(Graph &adj) {
     for (size_t i = 0; i < adj.size(); i++) {
@@ -135,15 +126,48 @@ void displayAdjList(Graph &adj) {
     }
 }
 
-// Compile with make then ./main
+void generateGraph(Graph &adj, int n, int dimension){
+    if (dimension == 0){
+        generateComplete(adj, n);
+    } else if (dimension == 1){
+        generateHypercube(adj, n);
+    } else if (dimension == 2){
+        generateUnitSquare(adj, n);
+    } else if (dimension == 3){
+        generate3D(adj, n);
+    } else if (dimension == 4){
+        generate4D(adj, n);
+    } else {
+        std::cerr << "ERROR: Invalid dimension." << std::endl;
+        exit(1);
+    }
+}
 
-int main(){
-    Graph graph(n);
-    //generateComplete(graph);
-    generateHyperUnit(graph,4);
-   float mstWeight = kruskal(graph); 
-    std::cout << "Minimum Spanning Tree Weight (Kruskal): " << mstWeight << std::endl;
-    mstWeight = prim(graph); 
-    std::cout << "Minimum Spanning Tree Weight (Prim): " << mstWeight << std::endl;
-    displayAdjList(graph);
+// Compile with make then ./randmst 0 numpoints numtrials dimension
+
+int main(int argc, char* argv[]) {
+    if (argc != 5) {
+        std::cerr << "Usage: ./randmst 0 numpoints numtrials dimension" << std::endl;
+        return 1;
+    }
+
+    int numpoints = std::atoi(argv[2]);
+    int numtrials = std::atoi(argv[3]);
+    int dimension = std::atoi(argv[4]); 
+
+  float kruskalWeight = 0.0;
+  float primWeight = 0.0;
+  for (int i = 0; i < numtrials; i++) {
+      Graph graph(numpoints);
+      generateGraph(graph, numpoints, dimension);
+      kruskalWeight += kruskal(graph);
+      primWeight += prim(graph);
+  }
+
+  std::cout << "Average MST Weight using Kruskal: " << (kruskalWeight / numtrials) << "\n"
+            << "Average MST Weight using Prim: " << (primWeight / numtrials) << "\n"
+            << "Number of Points: " << numpoints << "\n"
+            << "Number of Trials: " << numtrials << "\n"
+            << "Graph Dimension: " << dimension << std::endl;
+  return 0;
 }
