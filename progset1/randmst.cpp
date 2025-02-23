@@ -237,14 +237,9 @@ int main(int argc, char* argv[]) {
             Graph graph(numpoints);
             generateGraph(graph, numpoints, dimension);
             kruskalWeight += kruskal(graph);
-            primWeight += prim(graph);
         }
 
-        std::cout << "Average MST Weight using Kruskal: " << (kruskalWeight / numtrials) << "\n"
-                  << "Average MST Weight using Prim: " << (primWeight / numtrials) << "\n"
-                  << "Number of Points: " << numpoints << "\n"
-                  << "Number of Trials: " << numtrials << "\n"
-                  << "Graph Dimension: " << dimension << std::endl;
+        std::cout << (kruskalWeight / numtrials) << numpoints <<  numtrials << dimension << std::endl;
 
     } else {
         std::cerr << "Invalid mode! Use 0 for MST calculation or 1 for experiments." << std::endl;
