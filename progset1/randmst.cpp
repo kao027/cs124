@@ -232,14 +232,13 @@ int main(int argc, char* argv[]) {
         int dimension = std::atoi(argv[4]);
 
         float kruskalWeight = 0.0;
-        float primWeight = 0.0;
         for (int i = 0; i < numtrials; i++) {
             Graph graph(numpoints);
             generateGraph(graph, numpoints, dimension);
             kruskalWeight += kruskal(graph);
         }
 
-        std::cout << (kruskalWeight / numtrials) << numpoints <<  numtrials << dimension << std::endl;
+        std::cout << (kruskalWeight / numtrials) << " " << numpoints << " " << numtrials << " " << dimension << std::endl;
 
     } else {
         std::cerr << "Invalid mode! Use 0 for MST calculation or 1 for experiments." << std::endl;
