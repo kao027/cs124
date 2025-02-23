@@ -84,7 +84,6 @@ void generate3D(Graph &adj){
 
 }
 
-
 struct hyperPoint { 
     float x,y,z,w;
 };
@@ -125,9 +124,6 @@ void generateHyperUnit(Graph &adj, float dimen){
         std::cout << "  ERROR: Please select a 3D or 4D graph.\n";
     }
 }
-
-
-
 
 void displayAdjList(Graph &adj) {
     for (size_t i = 0; i < adj.size(); i++) {
