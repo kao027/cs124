@@ -3,19 +3,22 @@
 #include <iostream>
 #include "mst.h"
 #include <math.h>
+#include <random>
 #include <cstdlib>
+
 
 void addEdge(Graph &adj, int u, int v, float w){
     adj[u].push_back({v,w});
     adj[v].push_back({u,w}); // because undirected
 }
 
+
 //graph type #1
 void generateComplete(Graph &adj, int n){
-    srand(time(0));
     for (int u = 0; u < n; u++){
         for (int v = u+1; v < n; v++){
             float newWeight = (float)rand() / RAND_MAX;
+            std::cout << "New Weight: " << newWeight << "\n";
             addEdge(adj, u, v, newWeight);
         }
     }
@@ -23,11 +26,11 @@ void generateComplete(Graph &adj, int n){
 
 //graph type #2
 void generateHypercube(Graph &adj, int n){
-    srand(time(0));
     for (int u = 0; u < n; u++){
         for (int v = u+1; v<n; v++){
             if (((v-u) & (v-u-1))==0){ // if v-u is a power of 2
                 float newWeight = (float)rand() / RAND_MAX;
+                std::cout << "New Weight: " << newWeight << "\n";
                 addEdge(adj, u, v, newWeight);
             }
         }
@@ -36,7 +39,6 @@ void generateHypercube(Graph &adj, int n){
 
 //graph type #3
 void generateUnitSquare(Graph &adj, int n){
-    srand(time(0));
     std::vector<std::pair<float,float>> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
        float x = (float)rand() / RAND_MAX;
@@ -62,7 +64,6 @@ struct unitPoint { // no tuples in C :(
 };
 
 void generate3D(Graph &adj, int n){
-    srand(time(0));
     std::vector<unitPoint> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
         float x = (float)rand() / RAND_MAX;
@@ -90,7 +91,6 @@ struct hyperPoint {
 };
 
 void generate4D(Graph &adj, int n){
-    srand(time(0));
     std::vector<hyperPoint> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
         float x = (float)rand() / RAND_MAX;
@@ -194,6 +194,7 @@ void hypercubeExperiment(int numtrials) {
 // To run experiments ./randmst 1 numtrials dimension
 
 int main(int argc, char* argv[]) {
+    srand(time(0));
     if (argc < 4) {
         std::cerr << "Usage: ./randmst <mode> <numpoints> <numtrials> <dimension>" << std::endl;
         return 1;
@@ -239,7 +240,6 @@ int main(int argc, char* argv[]) {
             kruskalWeight += kruskal(graph);
         }
         std::cout << (kruskalWeight / numtrials) << " " << numpoints << " " <<  numtrials << " " << dimension << std::endl;
-        std::fflush;
 
     } else {
         std::cerr << "Invalid mode! Use 0 for MST calculation or 1 for experiments." << std::endl;
