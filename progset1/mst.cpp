@@ -108,6 +108,15 @@ void Heap::printHeap() const
     cout << endl;
 }
 
+/*void FibHeap::insert(w_pair key){
+    node* v = (node*)malloc(sizeof(node));
+    v->key = key;
+    v->parent = NULL;
+    v->child = NULL;
+    v->left = v;
+    v->right = v;
+}*/
+
 //Kruskal Algorithm
 
 float kruskal(Graph& adj){

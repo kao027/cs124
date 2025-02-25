@@ -43,6 +43,20 @@ class Heap {
         void printHeap() const;
 };
 
+class FibHeap { // for prims
+    public:
+        struct node {
+            int vertex;
+            node* parent;
+            node* child;
+            node* left;
+            node* right;
+            w_pair key; //min edge weight and vertex it connects to
+            int degree; // number of children
+        };
+        void insert(w_pair);
+};
+
 
 float kruskal(Graph &adj);
 float prim(Graph &adj);

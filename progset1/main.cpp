@@ -117,19 +117,6 @@ void generate4D(Graph &adj){
 
 }
 
-/*void generateHyperUnit(Graph &adj, float dimen){
-    srand(time(0));
-    if (dimen==3){
-        generate3D(adj);
-    } else if (dimen==4){
-        generate4D(adj);
-    } else {
-        std::cout << "  ERROR: Please select a 3D or 4D graph.\n";
-    }
-}*/
-
-
-
 
 void displayAdjList(Graph &adj) {
     for (size_t i = 0; i < adj.size(); i++) {
@@ -147,7 +134,7 @@ int main(){
     Graph graph(n);
     //generateComplete(graph);
     generateHyperUnit(graph,4);
-   float mstWeight = kruskal(graph); 
+    float mstWeight = kruskal(graph); 
     std::cout << "Minimum Spanning Tree Weight (Kruskal): " << mstWeight << std::endl;
     mstWeight = prim(graph); 
     std::cout << "Minimum Spanning Tree Weight (Prim): " << mstWeight << std::endl;
