@@ -6,6 +6,8 @@
 #include <random>
 #include <cstdlib>
 
+std::mt19937 generator;
+std::uniform_real_distribution<float> distribution(0.0, 1.0);
 
 void addEdge(Graph &adj, int u, int v, float w){
     adj[u].push_back({v,w});
@@ -17,8 +19,8 @@ void addEdge(Graph &adj, int u, int v, float w){
 void generateComplete(Graph &adj, int n){
     for (int u = 0; u < n; u++){
         for (int v = u+1; v < n; v++){
-            float newWeight = (float)rand() / RAND_MAX;
-            std::cout << "New Weight: " << newWeight << "\n";
+            float newWeight = distribution(generator);
+           // std::cout << "New Weight: " << newWeight << "\n";
             addEdge(adj, u, v, newWeight);
         }
     }
@@ -29,8 +31,8 @@ void generateHypercube(Graph &adj, int n){
     for (int u = 0; u < n; u++){
         for (int v = u+1; v<n; v++){
             if (((v-u) & (v-u-1))==0){ // if v-u is a power of 2
-                float newWeight = (float)rand() / RAND_MAX;
-                std::cout << "New Weight: " << newWeight << "\n";
+                float newWeight = distribution(generator);
+                //std::cout << "New Weight: " << newWeight << "\n";
                 addEdge(adj, u, v, newWeight);
             }
         }
@@ -41,8 +43,8 @@ void generateHypercube(Graph &adj, int n){
 void generateUnitSquare(Graph &adj, int n){
     std::vector<std::pair<float,float>> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
-       float x = (float)rand() / RAND_MAX;
-       float y = (float)rand() / RAND_MAX;
+       float x = distribution(generator);
+       float y = distribution(generator);
        coordinates[i] = {x,y}; // store the points in a vector
     }
     for (int u = 0; u < n; u++){
@@ -66,9 +68,9 @@ struct unitPoint { // no tuples in C :(
 void generate3D(Graph &adj, int n){
     std::vector<unitPoint> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
-        float x = (float)rand() / RAND_MAX;
-        float y = (float)rand() / RAND_MAX;
-        float z = (float)rand() / RAND_MAX;
+        float x =  distribution(generator);
+        float y = distribution(generator);
+        float z = distribution(generator);
         coordinates[i] = {x,y,z}; // store the points in a vector
     }
     for (int u = 0; u < n; u++){
@@ -93,10 +95,10 @@ struct hyperPoint {
 void generate4D(Graph &adj, int n){
     std::vector<hyperPoint> coordinates(n);
     for (int i = 0; i < n; i++){ // pick the points
-        float x = (float)rand() / RAND_MAX;
-        float y = (float)rand() / RAND_MAX;
-        float z = (float)rand() / RAND_MAX;
-        float w = (float)rand() / RAND_MAX;
+        float x =  distribution(generator);
+        float y = distribution(generator);
+        float z = distribution(generator);
+        float w = distribution(generator);
         coordinates[i] = {x,y,z,w}; // store the points in a vector
     }
     for (int u = 0; u < n; u++){
@@ -194,7 +196,8 @@ void hypercubeExperiment(int numtrials) {
 // To run experiments ./randmst 1 numtrials dimension
 
 int main(int argc, char* argv[]) {
-    srand(time(0));
+    std::random_device rd;  // Non-deterministic seed
+    generator.seed(rd());
     if (argc < 4) {
         std::cerr << "Usage: ./randmst <mode> <numpoints> <numtrials> <dimension>" << std::endl;
         return 1;
@@ -236,7 +239,7 @@ int main(int argc, char* argv[]) {
         for (int i = 0; i < numtrials; i++) {
             Graph graph(numpoints);
             generateGraph(graph, numpoints, dimension);
-            //displayAdjList(graph);
+            //std::cout << "Graph Weight " << kruskal(graph) << std::endl;
             kruskalWeight += kruskal(graph);
         }
         std::cout << (kruskalWeight / numtrials) << " " << numpoints << " " <<  numtrials << " " << dimension << std::endl;
