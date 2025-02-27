@@ -20,7 +20,7 @@ void generateComplete(Graph &adj, int n){
     for (int u = 0; u < n; u++){
         for (int v = u+1; v < n; v++){
             float newWeight = distribution(generator);
-            if (newWeight <= 0.1){
+            if (newWeight <= 0.05){
             addEdge(adj, u, v, newWeight);
             }
         }
@@ -54,7 +54,7 @@ void generateUnitSquare(Graph &adj, int n){
             float vx = coordinates[v].first;
             float vy = coordinates[v].second;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy));
-           if (euclidWeight <= .4){
+           if (euclidWeight <= 0.1582){
                 addEdge(adj, u, v, euclidWeight);
             }
         }
@@ -84,7 +84,7 @@ void generate3D(Graph &adj, int n){
             float vy = coordinates[v].y;
             float vz = coordinates[v].z;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy)+(vz-uz)*(vz-uz));
-            if (euclidWeight <= .5){
+            if (euclidWeight <= .253){
             addEdge(adj, u, v, euclidWeight);
             }
         }
@@ -116,7 +116,7 @@ void generate4D(Graph &adj, int n){
             float vz = coordinates[v].z;
             float vw = coordinates[v].w;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy)+(vz-uz)*(vz-uz)+(vw-uw)*(vw-uw));
-            if (euclidWeight <= .5){
+            if (euclidWeight <= 0.392914){
                 addEdge(adj, u, v, euclidWeight);
             }
         }
@@ -246,7 +246,6 @@ int main(int argc, char* argv[]) {
             generateGraph(graph, numpoints, dimension);
             //std::cout << "Graph Weight " << kruskal(graph) << std::endl;
             kruskalWeight += kruskal(graph);
-            //primWeight += kruskal(graph);
         }
         std::cout << (kruskalWeight / numtrials) << " " << numpoints << " " <<  numtrials << " " << dimension << std::endl;
 
