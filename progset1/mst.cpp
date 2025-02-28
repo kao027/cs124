@@ -122,7 +122,7 @@ void Heap::printHeap() const
 float kruskal(Graph& adj){
     //  Initialize result
     float mst_wt = 0; 
-    //float max_edge = 0;
+    float max_edge = 0;
 
     int size = adj.size(); 
     // Create V single item sets
@@ -154,11 +154,12 @@ float kruskal(Graph& adj){
         if (set_u != set_v) { 
             mst_wt += weight;
             set.merge(u, v);
-            /*if (weight > max_edge){
+            if (weight > max_edge){
                 max_edge = weight;
-            }*/
+            }
         }
     }
+    //return max_edge;
     return mst_wt;
 
 }

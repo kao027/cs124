@@ -22,7 +22,7 @@ void generateComplete(Graph &adj, int n){
         for (int v = u+1; v < n; v++){
             float newWeight = distribution(generator);
             if (newWeight <= avg_max){
-            addEdge(adj, u, v, newWeight);
+                addEdge(adj, u, v, newWeight);
             }
         }
     }
@@ -43,7 +43,7 @@ void generateHypercube(Graph &adj, int n){
 //graph type #3
 void generateUnitSquare(Graph &adj, int n){
     std::vector<std::pair<float,float>> coordinates(n);
-    float avg_max = 2*pow(n,-0.5); //regression of n vs. max_edge
+    float avg_max = 1.83*pow(n,-0.5); //regression of n vs. max_edge
     for (int i = 0; i < n; i++){ // pick the points
        float x = distribution(generator);
        float y = distribution(generator);
@@ -56,7 +56,7 @@ void generateUnitSquare(Graph &adj, int n){
             float vx = coordinates[v].first;
             float vy = coordinates[v].second;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy));
-           if (euclidWeight <= avg_max){
+            if (euclidWeight <= avg_max){
                 addEdge(adj, u, v, euclidWeight);
             }
         }
