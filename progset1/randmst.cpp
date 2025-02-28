@@ -17,10 +17,11 @@ void addEdge(Graph &adj, int u, int v, float w){
 
 //graph type #1
 void generateComplete(Graph &adj, int n){
+    float avg_max = 2.45*pow(n,-0.85); //regression
     for (int u = 0; u < n; u++){
         for (int v = u+1; v < n; v++){
             float newWeight = distribution(generator);
-            if (newWeight <= 0.05){
+            if (newWeight <= avg_max){
             addEdge(adj, u, v, newWeight);
             }
         }
@@ -42,6 +43,7 @@ void generateHypercube(Graph &adj, int n){
 //graph type #3
 void generateUnitSquare(Graph &adj, int n){
     std::vector<std::pair<float,float>> coordinates(n);
+    float avg_max = 2*pow(n,-0.5); //regression of n vs. max_edge
     for (int i = 0; i < n; i++){ // pick the points
        float x = distribution(generator);
        float y = distribution(generator);
@@ -54,7 +56,7 @@ void generateUnitSquare(Graph &adj, int n){
             float vx = coordinates[v].first;
             float vy = coordinates[v].second;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy));
-           if (euclidWeight <= 0.1582){
+           if (euclidWeight <= avg_max){
                 addEdge(adj, u, v, euclidWeight);
             }
         }
@@ -69,6 +71,7 @@ struct unitPoint { // no tuples in C :(
 
 void generate3D(Graph &adj, int n){
     std::vector<unitPoint> coordinates(n);
+    float avg_max = 1.35*pow(n,-.333);
     for (int i = 0; i < n; i++){ // pick the points
         float x =  distribution(generator);
         float y = distribution(generator);
@@ -84,7 +87,7 @@ void generate3D(Graph &adj, int n){
             float vy = coordinates[v].y;
             float vz = coordinates[v].z;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy)+(vz-uz)*(vz-uz));
-            if (euclidWeight <= .253){
+            if (euclidWeight <= avg_max){
             addEdge(adj, u, v, euclidWeight);
             }
         }
@@ -98,6 +101,7 @@ struct hyperPoint {
 
 void generate4D(Graph &adj, int n){
     std::vector<hyperPoint> coordinates(n);
+    float avg_max = 1.4*pow(n,-.25);
     for (int i = 0; i < n; i++){ // pick the points
         float x =  distribution(generator);
         float y = distribution(generator);
@@ -116,7 +120,7 @@ void generate4D(Graph &adj, int n){
             float vz = coordinates[v].z;
             float vw = coordinates[v].w;
             float euclidWeight = sqrt((vx-ux)*(vx-ux)+(vy-uy)*(vy-uy)+(vz-uz)*(vz-uz)+(vw-uw)*(vw-uw));
-            if (euclidWeight <= 0.392914){
+            if (euclidWeight <= avg_max){
                 addEdge(adj, u, v, euclidWeight);
             }
         }
@@ -184,8 +188,8 @@ void runExperiment(int numpoints, int numtrials, int dimension, int algo) {
 void completeExperiment(int numtrials, int dimension) {
     std::vector<int> complete_graph_sizes = {128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768};
     for (int n : complete_graph_sizes) {
-        // Run prim's algorithm
-        runExperiment(n, numtrials, dimension, 0); 
+        // Run krukskals's algorithm
+        runExperiment(n, numtrials, dimension, 1); 
     }
 }
 
