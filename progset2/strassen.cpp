@@ -4,7 +4,7 @@
 #include <fstream>
 #include <cassert>
 
-int n = 4;
+int dimen = 4;
 
 typedef std::vector<std::vector<int>> matrix;
 
@@ -55,6 +55,22 @@ matrix addMatrices(matrix a, matrix b, int sign = 1){ //
     return ans;
 }
 
+matrix gradeSchoolMultiply(matrix arr1, matrix brr1){
+    assert(arr1.size() == brr1.size());
+    assert(arr1[0].size() == brr1[0].size());
+    int n = arr1.size();
+    matrix ans(n, std::vector<int>(n));
+
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            for (int k = 0; k < n; k++){
+                ans[i][j] += arr1[i][k] * brr1[k][j];
+            }
+        }
+    }
+    return ans;
+}
+
 
 matrix strassenMultiply(matrix arr1, matrix brr1){
     assert(arr1.size() == brr1.size());
@@ -84,7 +100,7 @@ matrix strassenMultiply(matrix arr1, matrix brr1){
     // creating the submatrices; after : is submatrix from lecture notes
     for (int i = 0; i < n; i++){
         for (int j = 0; j < n; j++){
-            a[i][j] = arr1[i][j];     // top left of arr1:A
+            a[i][j] = arr1[i][j];     // top left of A:A
             b[i][j] = arr1[i][j+n];   // top right of A:B
             c[i][j] = arr1[i+n][j];   // bottom left of A:C
             d[i][j] = arr1[i+n][j+n]; // bottom right of A:D
@@ -122,17 +138,18 @@ matrix strassenMultiply(matrix arr1, matrix brr1){
 }
 
 int main(){
-    matrix A(n, std::vector<int>(n));
-    matrix B(n, std::vector<int>(n));
-    generateMatrices(n, A, B, "inputpractice.txt");
+    matrix A(dimen, std::vector<int>(dimen));
+    matrix B(dimen, std::vector<int>(dimen));
+    generateMatrices(dimen, A, B, "inputpractice.txt");
     
-    std::cout << "Matrix A" << std::endl;
+    /*std::cout << "Matrix A" << std::endl;
     printMatrix(A);
     std::cout << "Matrix B" << std::endl;
     printMatrix(B);
+    */
     matrix result = strassenMultiply(A, B);
+    //matrix result = gradeSchoolMultiply(A,B);
     std::cout << "A *  B = " << std::endl;
     printMatrix(result);
-
 
 }
