@@ -194,7 +194,7 @@ void runTests(const std::vector<int>& dimens, std::vector<int> crossovers, const
             outfile << "dimen: " << dimen << "x" << dimen << "\n";
 
             auto start = std::chrono::high_resolution_clock::now();
-            matrix naiveResult = gradeSchoolMultiply(A, B);
+            matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
             auto end = std::chrono::high_resolution_clock::now();
             std::chrono::duration<double> naiveTime = end - start;
             outfile << "Grade-School Time: " << naiveTime.count() << " s\n";
@@ -205,6 +205,9 @@ void runTests(const std::vector<int>& dimens, std::vector<int> crossovers, const
             std::chrono::duration<double> strassenTime = end - start;
             outfile << "Strassen Time: " << strassenTime.count() << " s\n";
             outfile << "---------------------------------\n";
+            if (strassenTime.count() > naiveTime.count()) {
+                fastStrassen = false;
+            }
         }
         if (fastStrassen) {
             upperBound = cross;
