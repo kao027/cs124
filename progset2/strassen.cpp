@@ -71,11 +71,15 @@ matrix gradeSchoolMultiply(matrix arr1, matrix brr1){
 }
 
 
-matrix strassenMultiply(matrix arr1, matrix brr1){
+matrix strassenMultiply(matrix arr1, matrix brr1, int cross){
     assert(arr1.size() == brr1.size());
     assert(arr1[0].size() == brr1[0].size());
     int n = arr1.size();
     matrix ans(n, std::vector<int>(n));
+
+    if (n <= cross){
+        return gradeSchoolMultiply(arr1, brr1);
+    }
 
     if (n == 1){
         ans[0][0] = arr1[0][0] * brr1[0][0];
@@ -85,7 +89,6 @@ matrix strassenMultiply(matrix arr1, matrix brr1){
     n = n/2;
     
     //initializing submatrices
-
     matrix a(n, std::vector<int>(n));
     matrix b(n, std::vector<int>(n));
     matrix c(n, std::vector<int>(n));
@@ -110,13 +113,13 @@ matrix strassenMultiply(matrix arr1, matrix brr1){
             h[i][j] = brr1[i+n][j+n]; // bottom right of B:H
         }
     }
-    matrix p1 = strassenMultiply(a, addMatrices(f,h,-1));
-    matrix p2 = strassenMultiply(addMatrices(a,b),h);
-    matrix p3 = strassenMultiply(addMatrices(c,d),e);
-    matrix p4 = strassenMultiply(d, addMatrices(g,e,-1));
-    matrix p5 = strassenMultiply(addMatrices(a,d),addMatrices(e,h));
-    matrix p6 = strassenMultiply(addMatrices(b,d,-1),addMatrices(g,h));
-    matrix p7 = strassenMultiply(addMatrices(c,a,-1),addMatrices(e,f));
+    matrix p1 = strassenMultiply(a, addMatrices(f,h,-1), cross);
+    matrix p2 = strassenMultiply(addMatrices(a,b),h,cross);
+    matrix p3 = strassenMultiply(addMatrices(c,d),e,cross);
+    matrix p4 = strassenMultiply(d, addMatrices(g,e,-1),cross);
+    matrix p5 = strassenMultiply(addMatrices(a,d),addMatrices(e,h),cross);
+    matrix p6 = strassenMultiply(addMatrices(b,d,-1),addMatrices(g,h),cross);
+    matrix p7 = strassenMultiply(addMatrices(c,a,-1),addMatrices(e,f),cross);
 
     //RESULTS
     matrix topleft = addMatrices(addMatrices(p4,p2,-1),addMatrices(p5,p6));
@@ -168,7 +171,7 @@ void generateFile(int d, const std::string &fileName) {
 }
 
 int main(){
-    int dimen = 100;
+    int dimen = 200;
     matrix A(dimen, std::vector<int>(dimen));
     matrix B(dimen, std::vector<int>(dimen));
     generateFile(dimen, "test.txt");
@@ -186,11 +189,13 @@ int main(){
     std::chrono::duration<double> gradeSchoolTime = end - start;
     std::cout << "Grade-School Multiplication Time: " << gradeSchoolTime.count() << " seconds" << std::endl;
 
+
     // Timing Strassen Multiplication
     start = std::chrono::high_resolution_clock::now();
-    matrix strassenResult = strassenMultiply(A, B);
+    matrix strassenResult = strassenMultiply(A, B, 51);
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> strassenTime = end - start;
     std::cout << "Strassen Multiplication Time: " << strassenTime.count() << " seconds" << std::endl;
+    
 
 }
