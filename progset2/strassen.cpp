@@ -6,7 +6,7 @@
 #include <chrono>
 
 typedef std::vector<std::vector<int>> matrix;
-
+const int CROSSOVER_POINT = 30;
 void printMatrix(matrix m){
     for (int r = 0; r < m.size(); r++){
        for (int c = 0; c < m[r].size(); c++){
@@ -76,6 +76,10 @@ matrix strassenMultiply(matrix arr1, matrix brr1){
     assert(arr1[0].size() == brr1[0].size());
     int n = arr1.size();
     matrix ans(n, std::vector<int>(n));
+
+    if (n <= CROSSOVER_POINT) {
+        return gradeSchoolMultiply(arr1, brr1);
+    }
 
     if (n == 1){
         ans[0][0] = arr1[0][0] * brr1[0][0];
@@ -168,7 +172,7 @@ void generateFile(int d, const std::string &fileName) {
 }
 
 int main(){
-    int dimen = 100;
+    int dimen = 32;
     matrix A(dimen, std::vector<int>(dimen));
     matrix B(dimen, std::vector<int>(dimen));
     generateFile(dimen, "test.txt");
