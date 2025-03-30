@@ -64,6 +64,11 @@
         "compare": "cpp",
         "concepts": "cpp",
         "algorithm": "cpp",
-        "utility": "cpp"
+        "utility": "cpp",
+        "fstream": "cpp",
+        "iomanip": "cpp",
+        "stack": "cpp",
+        "numeric": "cpp",
+        "random": "cpp"
     }
 }

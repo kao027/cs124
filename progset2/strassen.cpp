@@ -3,8 +3,7 @@
 #include <vector>
 #include <fstream>
 #include <cassert>
-
-int dimen = 4;
+#include <chrono>
 
 typedef std::vector<std::vector<int>> matrix;
 
@@ -137,19 +136,61 @@ matrix strassenMultiply(matrix arr1, matrix brr1){
     return ans;
 }
 
+
+void generateFile(int d, const std::string &fileName) {
+    int size = d; 
+
+    // Seed the random number generator
+    std::srand(std::time(0));
+
+    // Open the file to write the generated 2D array
+    std::ofstream outFile(fileName);
+
+    if (!outFile) {
+        std::cerr << "Error opening file for writing!" << std::endl;
+        return;
+    }
+
+    // Generate 2d^2 numbers
+    for(int i = 0; i < 2; ++i){
+        for (int i = 0; i < size; ++i) {
+            for (int j = 0; j < size; ++j) {
+                int randomValue = std::rand() % 2; // Randomly generate 0 or 1
+                outFile << randomValue << " ";
+            }
+        }
+        outFile << std::endl;
+    }
+
+    // Close the file
+    outFile.close();
+    std::cout << "Random 2D array has been written to " << fileName << std::endl;
+}
+
 int main(){
+    int dimen = 100;
     matrix A(dimen, std::vector<int>(dimen));
     matrix B(dimen, std::vector<int>(dimen));
-    generateMatrices(dimen, A, B, "inputpractice.txt");
-    
-    /*std::cout << "Matrix A" << std::endl;
-    printMatrix(A);
-    std::cout << "Matrix B" << std::endl;
-    printMatrix(B);
-    */
-    matrix result = strassenMultiply(A, B);
-    //matrix result = gradeSchoolMultiply(A,B);
-    std::cout << "A *  B = " << std::endl;
-    printMatrix(result);
+    generateFile(dimen, "test.txt");
+    generateMatrices(dimen, A, B, "test.txt");
+
+    // std::cout << "Matrix A" << std::endl;
+    // printMatrix(A);
+    // std::cout << "Matrix B" << std::endl;
+    // printMatrix(B);
+
+    // Timing Grade-School Multiplication
+    auto start = std::chrono::high_resolution_clock::now();
+    matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> gradeSchoolTime = end - start;
+    std::cout << "Grade-School Multiplication Time: " << gradeSchoolTime.count() << " seconds" << std::endl;
+
+    // Timing Strassen Multiplication
+    start = std::chrono::high_resolution_clock::now();
+    matrix strassenResult = strassenMultiply(A, B);
+    end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> strassenTime = end - start;
+    std::cout << "Strassen Multiplication Time: " << strassenTime.count() << " seconds" << std::endl;
 
 }
