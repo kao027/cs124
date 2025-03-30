@@ -1,0 +1,116 @@
+Testing with CROSSOVER_POINT = 8
+dimen: 4x4
+Grade-School Time: 3e-06 s
+Strassen Time: 4.875e-06 s
+---------------------------------
+dimen: 8x8
+Grade-School Time: 5.125e-06 s
+Strassen Time: 8.875e-06 s
+---------------------------------
+dimen: 16x16
+Grade-School Time: 1.9042e-05 s
+Strassen Time: 0.000150875 s
+---------------------------------
+dimen: 32x32
+Grade-School Time: 5.9458e-05 s
+Strassen Time: 0.000735375 s
+---------------------------------
+dimen: 64x64
+Grade-School Time: 0.000417375 s
+Strassen Time: 0.00807554 s
+---------------------------------
+dimen: 128x128
+Grade-School Time: 0.00230258 s
+Strassen Time: 0.0355893 s
+---------------------------------
+dimen: 256x256
+Grade-School Time: 0.0226253 s
+Strassen Time: 0.232989 s
+---------------------------------
+Testing with CROSSOVER_POINT = 13
+dimen: 4x4
+Grade-School Time: 1.959e-06 s
+Strassen Time: 3.334e-06 s
+---------------------------------
+dimen: 8x8
+Grade-School Time: 2.875e-06 s
+Strassen Time: 5.125e-06 s
+---------------------------------
+dimen: 16x16
+Grade-School Time: 7.125e-06 s
+Strassen Time: 8.2458e-05 s
+---------------------------------
+dimen: 32x32
+Grade-School Time: 2.9084e-05 s
+Strassen Time: 0.000640459 s
+---------------------------------
+dimen: 64x64
+Grade-School Time: 0.000211208 s
+Strassen Time: 0.00511087 s
+---------------------------------
+dimen: 128x128
+Grade-School Time: 0.00160263 s
+Strassen Time: 0.0331814 s
+---------------------------------
+dimen: 256x256
+Grade-School Time: 0.0224453 s
+Strassen Time: 0.231657 s
+---------------------------------
+Testing with CROSSOVER_POINT = 16
+dimen: 4x4
+Grade-School Time: 5.75e-06 s
+Strassen Time: 3.416e-06 s
+---------------------------------
+dimen: 8x8
+Grade-School Time: 2.666e-06 s
+Strassen Time: 5.125e-06 s
+---------------------------------
+dimen: 16x16
+Grade-School Time: 6.875e-06 s
+Strassen Time: 1.1209e-05 s
+---------------------------------
+dimen: 32x32
+Grade-School Time: 2.9042e-05 s
+Strassen Time: 0.000164 s
+---------------------------------
+dimen: 64x64
+Grade-School Time: 0.000211417 s
+Strassen Time: 0.0012375 s
+---------------------------------
+dimen: 128x128
+Grade-School Time: 0.00166079 s
+Strassen Time: 0.00883333 s
+---------------------------------
+dimen: 256x256
+Grade-School Time: 0.0225198 s
+Strassen Time: 0.0645325 s
+---------------------------------
+Testing with CROSSOVER_POINT = 32
+dimen: 4x4
+Grade-School Time: 2e-06 s
+Strassen Time: 3.25e-06 s
+---------------------------------
+dimen: 8x8
+Grade-School Time: 2.875e-06 s
+Strassen Time: 5.417e-06 s
+---------------------------------
+dimen: 16x16
+Grade-School Time: 6.958e-06 s
+Strassen Time: 1.125e-05 s
+---------------------------------
+dimen: 32x32
+Grade-School Time: 2.9125e-05 s
+Strassen Time: 3.6958e-05 s
+---------------------------------
+dimen: 64x64
+Grade-School Time: 0.00021475 s
+Strassen Time: 0.000417291 s
+---------------------------------
+dimen: 128x128
+Grade-School Time: 0.00159892 s
+Strassen Time: 0.00339992 s
+---------------------------------
+dimen: 256x256
+Grade-School Time: 0.0223659 s
+Strassen Time: 0.0237508 s
+---------------------------------
