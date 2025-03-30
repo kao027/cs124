@@ -1,0 +1,30 @@
+Testing with CROSSOVER_POINT = 8
+Testing with CROSSOVER_POINT = 8
+dimen: 4x4
+Grade-School Time: 1.792e-06 s
+Strassen Time: 3.375e-06 s
+---------------------------------
+dimen: 8x8
+Grade-School Time: 3.334e-06 s
+Strassen Time: 5.458e-06 s
+---------------------------------
+dimen: 16x16
+Grade-School Time: 9.542e-06 s
+Strassen Time: 8.6084e-05 s
+---------------------------------
+dimen: 32x32
+Grade-School Time: 3.1542e-05 s
+Strassen Time: 0.000671416 s
+---------------------------------
+dimen: 64x64
+Grade-School Time: 0.000187625 s
+Strassen Time: 0.00793588 s
+---------------------------------
+dimen: 128x128
+Grade-School Time: 0.00210763 s
+Strassen Time: 0.03558 s
+---------------------------------
+dimen: 256x256
+Grade-School Time: 0.0215005 s
+Strassen Time: 0.270711 s
+---------------------------------
