@@ -237,20 +237,40 @@ void generateFile(int d, const std::string &fileName) {
     std::cout << "Test results written to " << outputFilename << std::endl;
 }*/
 
-int main(){
-    std::vector<int> testSizes = {4, 8, 16, 32, 64, 128, 256};
-    std::vector<int> crossoverValues = {8, 13, 16, 32};
 
-    //runTests(testSizes, crossoverValues, "output.txt");
-    //return 0;
+int main(int argc, char *argv[]) {
+    if (argc != 4) {
+        std::cerr << "Usage: ./strassen 0 dimension inputfile" << std::endl;
+        return 1;
+    }
 
-    int dimen = 128;
-    generateFile(dimen, "experiments.txt");
+    int flag = std::stoi(argv[1]);  // Read flag (currently unused)
+    int dimen = std::stoi(argv[2]);     // Read dimension
+    const char* filename = argv[3]; // Read input file name
+
+    std::ifstream infile(filename);
+    if (!infile) {
+        std::cerr << "Error: Unable to open input file " << filename << std::endl;
+        return 1;
+    }
     
     matrix A(dimen, std::vector<int>(dimen));
     matrix B(dimen, std::vector<int>(dimen));
 
-    generateMatrices(dimen, A, B, "experiments.txt");
+    generateMatrices(dimen, A, B, filename);
+    matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
+    for (int i = 0; i < dimen; i++) {
+        std::cout << gradeSchoolResult[i][i] << std::endl;
+    }
+
+
+    // std::vector<int> testSizes = {4, 8, 16, 32, 64, 128, 256};
+    // std::vector<int> crossoverValues = {8, 13, 16, 32};
+
+    //runTests(testSizes, crossoverValues, "output.txt");
+    //return 0;
+
+    // generateFile(dimen, "experiments.txt");
 
     // std::cout << "Matrix A" << std::endl;
     // printMatrix(A);
@@ -258,17 +278,17 @@ int main(){
     // printMatrix(B);
 
     // Timing Grade-School Multiplication
-    auto start = std::chrono::high_resolution_clock::now();
-    matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
-    auto end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> gradeSchoolTime = end - start;
-    std::cout << "Grade-School Multiplication Time: " << gradeSchoolTime.count() << " seconds" << std::endl;
+    // auto start = std::chrono::high_resolution_clock::now();
+    // matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
+    // auto end = std::chrono::high_resolution_clock::now();
+    // std::chrono::duration<double> gradeSchoolTime = end - start;
+    // std::cout << "Grade-School Multiplication Time: " << gradeSchoolTime.count() << " seconds" << std::endl;
 
-    // // Timing Strassen Multiplication
-    start = std::chrono::high_resolution_clock::now();
-    matrix strassenResult = strassenMultiply(A, B);
-    end = std::chrono::high_resolution_clock::now();
-    std::chrono::duration<double> strassenTime = end - start;
-    std::cout << "Strassen Multiplication Time: " << strassenTime.count() << " seconds" << std::endl;
+    // // // Timing Strassen Multiplication
+    // start = std::chrono::high_resolution_clock::now();
+    // matrix strassenResult = strassenMultiply(A, B);
+    // end = std::chrono::high_resolution_clock::now();
+    // std::chrono::duration<double> strassenTime = end - start;
+    // std::cout << "Strassen Multiplication Time: " << strassenTime.count() << " seconds" << std::endl;
 
 }
