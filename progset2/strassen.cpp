@@ -8,6 +8,7 @@
 
 typedef std::vector<std::vector<int>> matrix;
 int CROSSOVER_POINT = 30;
+
 void printMatrix(matrix m){
     for (int r = 0; r < m.size(); r++){
        for (int c = 0; c < m[r].size(); c++){
@@ -72,13 +73,13 @@ matrix gradeSchoolMultiply(matrix arr1, matrix brr1){
 }
 
 
-matrix strassenMultiply(matrix arr1, matrix brr1, int cross){
+matrix strassenMultiply(matrix arr1, matrix brr1){
     assert(arr1.size() == brr1.size());
     assert(arr1[0].size() == brr1[0].size());
     int n = arr1.size();
     matrix ans(n, std::vector<int>(n));
 
-    if (n <= cross) {
+    if (n <= CROSSOVER_POINT) {
         return gradeSchoolMultiply(arr1, brr1);
     }
 
@@ -114,13 +115,13 @@ matrix strassenMultiply(matrix arr1, matrix brr1, int cross){
             h[i][j] = brr1[i+n][j+n]; // bottom right of B:H
         }
     }
-    matrix p1 = strassenMultiply(a, addMatrices(f,h,-1), cross);
-    matrix p2 = strassenMultiply(addMatrices(a,b),h,cross);
-    matrix p3 = strassenMultiply(addMatrices(c,d),e,cross);
-    matrix p4 = strassenMultiply(d, addMatrices(g,e,-1),cross);
-    matrix p5 = strassenMultiply(addMatrices(a,d),addMatrices(e,h),cross);
-    matrix p6 = strassenMultiply(addMatrices(b,d,-1),addMatrices(g,h),cross);
-    matrix p7 = strassenMultiply(addMatrices(c,a,-1),addMatrices(e,f),cross);
+    matrix p1 = strassenMultiply(a, addMatrices(f,h,-1));
+    matrix p2 = strassenMultiply(addMatrices(a,b),h);
+    matrix p3 = strassenMultiply(addMatrices(c,d),e);
+    matrix p4 = strassenMultiply(d, addMatrices(g,e,-1));
+    matrix p5 = strassenMultiply(addMatrices(a,d),addMatrices(e,h));
+    matrix p6 = strassenMultiply(addMatrices(b,d,-1),addMatrices(g,h));
+    matrix p7 = strassenMultiply(addMatrices(c,a,-1),addMatrices(e,f));
 
     //RESULTS
     matrix topleft = addMatrices(addMatrices(p4,p2,-1),addMatrices(p5,p6));
@@ -249,7 +250,7 @@ int main(){
 
     // // Timing Strassen Multiplication
     start = std::chrono::high_resolution_clock::now();
-    matrix strassenResult = strassenMultiply(A, B, 128);
+    matrix strassenResult = strassenMultiply(A, B);
     end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> strassenTime = end - start;
     std::cout << "Strassen Multiplication Time: " << strassenTime.count() << " seconds" << std::endl;
