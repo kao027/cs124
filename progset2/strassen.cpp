@@ -7,7 +7,7 @@
 #include <climits>
 
 typedef std::vector<std::vector<int>> matrix;
-int CROSSOVER_POINT = 30;
+int CROSSOVER_POINT = 50;
 
 void printMatrix(matrix m){
     for (int r = 0; r < m.size(); r++){
@@ -73,7 +73,7 @@ matrix gradeSchoolMultiply(matrix arr1, matrix brr1){
 }
 
 
-matrix strassenMultiply(matrix arr1, matrix brr1){
+matrix strassenMultiply(matrix &arr1, matrix &brr1){
     assert(arr1.size() == brr1.size());
     assert(arr1[0].size() == brr1[0].size());
     int n = arr1.size();
@@ -115,13 +115,29 @@ matrix strassenMultiply(matrix arr1, matrix brr1){
             h[i][j] = brr1[i+n][j+n]; // bottom right of B:H
         }
     }
-    matrix p1 = strassenMultiply(a, addMatrices(f,h,-1));
-    matrix p2 = strassenMultiply(addMatrices(a,b),h);
-    matrix p3 = strassenMultiply(addMatrices(c,d),e);
-    matrix p4 = strassenMultiply(d, addMatrices(g,e,-1));
-    matrix p5 = strassenMultiply(addMatrices(a,d),addMatrices(e,h));
-    matrix p6 = strassenMultiply(addMatrices(b,d,-1),addMatrices(g,h));
-    matrix p7 = strassenMultiply(addMatrices(c,a,-1),addMatrices(e,f));
+    matrix help = addMatrices(f,h,-1);
+    matrix p1 = strassenMultiply(a, help);
+
+    help = addMatrices(a,b);
+    matrix p2 = strassenMultiply(help,h);
+
+    help = addMatrices(c,d);
+    matrix p3 = strassenMultiply(help,e);
+
+    help = addMatrices(g,e,-1);
+    matrix p4 = strassenMultiply(d, help);
+
+    help = addMatrices(a,d);
+    matrix help2 = addMatrices(e,h);
+    matrix p5 = strassenMultiply(help,help2);
+
+    help = addMatrices(b,d,-1);
+    help2 = addMatrices(g,h);
+    matrix p6 = strassenMultiply(help,help2);
+
+    help = addMatrices(c,a,-1);
+    help2 = addMatrices(e,f);
+    matrix p7 = strassenMultiply(help,help2);
 
     //RESULTS
     matrix topleft = addMatrices(addMatrices(p4,p2,-1),addMatrices(p5,p6));
@@ -228,7 +244,7 @@ int main(){
     //runTests(testSizes, crossoverValues, "output.txt");
     //return 0;
 
-    int dimen = 32;
+    int dimen = 128;
     generateFile(dimen, "experiments.txt");
     
     matrix A(dimen, std::vector<int>(dimen));
