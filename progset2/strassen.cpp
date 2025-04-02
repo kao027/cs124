@@ -7,7 +7,8 @@
 #include <climits>
 
 typedef std::vector<std::vector<int>> matrix;
-int CROSSOVER_POINT = 50;
+
+int CROSSOVER_POINT = 16;
 
 void printMatrix(matrix m){
     for (int r = 0; r < m.size(); r++){
@@ -25,7 +26,7 @@ void generateMatrices(int d, matrix &a, matrix &b, const char* filename){
     for (int r = 0; r < d; r++){
         for (int c = 0; c < d; c++){
             if (!(infile >> entry)) {
-                std::cerr << "eof";
+                std::cerr << "Error: Not enough data in file." << std::endl;
                 exit(1);
             }
             a[r][c] = entry;
@@ -34,7 +35,7 @@ void generateMatrices(int d, matrix &a, matrix &b, const char* filename){
     for (int r = 0; r < d; r++){
         for (int c = 0; c < d; c++){
             if (!(infile >> entry)) {
-                std::cerr << "eof" << std::endl;
+                std::cerr << "Error: Not enough data in file." << std::endl;
                 exit(1);
             }
             b[r][c] = entry;
@@ -43,17 +44,19 @@ void generateMatrices(int d, matrix &a, matrix &b, const char* filename){
     infile.close();
 }
 
-matrix addMatrices(matrix a, matrix b, int sign = 1){ //
+matrix addMatrices(matrix &a, matrix &b, int sign = 1){ //
     //sign == 1 means add; sign == -1 means subtract
     assert(sign==1 || sign==-1);
     int d = a.size();
-    matrix ans(d, std::vector<int>(d));
+    //matrix ans(d, std::vector<int>(d));
     for (int r = 0; r < d; r++){
         for (int c = 0; c < d; c++){
-            ans[r][c] = a[r][c] + (b[r][c] * sign);
+            //ans[r][c] = a[r][c] + (b[r][c] * sign);
+            a[r][c] += (b[r][c] * sign);
         }
     }
-    return ans;
+   // return ans;
+   return a;
 }
 
 matrix gradeSchoolMultiply(matrix arr1, matrix brr1){
@@ -73,20 +76,43 @@ matrix gradeSchoolMultiply(matrix arr1, matrix brr1){
 }
 
 
-matrix strassenMultiply(matrix &arr1, matrix &brr1){
+matrix strassenMultiply(const matrix &arr1, const matrix &brr1){
     assert(arr1.size() == brr1.size());
     assert(arr1[0].size() == brr1[0].size());
     int n = arr1.size();
     matrix ans(n, std::vector<int>(n));
 
-    if (n <= CROSSOVER_POINT) {
-        return gradeSchoolMultiply(arr1, brr1);
-    }
-
     if (n == 1){
         ans[0][0] = arr1[0][0] * brr1[0][0];
         return ans;
     }
+    
+    if (n <= CROSSOVER_POINT) {
+        //std::cout << "hit crossover" << endl;
+        return gradeSchoolMultiply(arr1, brr1);
+    }
+
+    if (n % 2 == 1){
+        int padNum = n + 1;
+        matrix pad1(padNum, std::vector<int>(padNum));
+        matrix pad2(padNum, std::vector<int>(padNum));
+        for (int i = 0; i < arr1.size(); i++){
+            for (int j = 0; j < arr1[0].size(); j++){
+                pad1[i][j] = arr1[i][j];
+                pad2[i][j] = brr1[i][j];
+            }
+        }
+        matrix padResult = strassenMultiply(pad1, pad2);
+        matrix fixedResult(n, std::vector<int>(n));
+        for (int i = 0; i < n; i++){
+            for (int j = 0; j < n; j++){
+                fixedResult[i][j] = padResult[i][j];
+            }
+        }
+        return fixedResult;
+    }
+
+
     //split up
     n = n/2;
     
@@ -115,36 +141,50 @@ matrix strassenMultiply(matrix &arr1, matrix &brr1){
             h[i][j] = brr1[i+n][j+n]; // bottom right of B:H
         }
     }
-    matrix help = addMatrices(f,h,-1);
-    matrix p1 = strassenMultiply(a, help);
+    //help because of 
+    matrix dcsum(n, std::vector<int>(n));
+    matrix ehsum(n, std::vector<int>(n));
+    matrix bsubd(n, std::vector<int>(n));
+    matrix gsube(n, std::vector<int>(n));
 
-    help = addMatrices(a,b);
-    matrix p2 = strassenMultiply(help,h);
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            dcsum[i][j] = d[i][j]+c[i][j];
+            ehsum[i][j] = e[i][j]+h[i][j];
+            bsubd[i][j] = b[i][j]-d[i][j];
+            gsube[i][j] = g[i][j]-e[i][j];
+        }
+    }
 
-    help = addMatrices(c,d);
-    matrix p3 = strassenMultiply(help,e);
 
-    help = addMatrices(g,e,-1);
-    matrix p4 = strassenMultiply(d, help);
-
-    help = addMatrices(a,d);
-    matrix help2 = addMatrices(e,h);
-    matrix p5 = strassenMultiply(help,help2);
-
-    help = addMatrices(b,d,-1);
-    help2 = addMatrices(g,h);
-    matrix p6 = strassenMultiply(help,help2);
-
-    help = addMatrices(c,a,-1);
-    help2 = addMatrices(e,f);
-    matrix p7 = strassenMultiply(help,help2);
+    matrix p3 = strassenMultiply(dcsum,e);
+    matrix p4 = strassenMultiply(d, gsube);
+    matrix p7 = strassenMultiply(addMatrices(c,a,-1),addMatrices(e,f));
+    matrix p5 = strassenMultiply(addMatrices(d,a),ehsum);
+    matrix p1 = strassenMultiply(a, addMatrices(f,h,-1));
+    matrix p2 = strassenMultiply(addMatrices(a,b),h);
+    matrix p6 = strassenMultiply(bsubd,addMatrices(g,h));
+   
 
     //RESULTS
-    matrix topleft = addMatrices(addMatrices(p4,p2,-1),addMatrices(p5,p6));
-    matrix topright = addMatrices(p1,p2);
-    matrix bottomleft = addMatrices(p3,p4);
-    matrix bottomright = addMatrices(addMatrices(p1,p3,-1),addMatrices(p5,p7));
 
+    matrix bottomleft(n, std::vector<int>(n));
+    
+    for (int i = 0; i < n; i++){
+        for (int j = 0; j < n; j++){
+            bottomleft[i][j] = p3[i][j] + p4[i][j];
+        }
+    }
+    p6 = addMatrices(p6, p5);
+    p4 = addMatrices(p4,p2,-1);
+    matrix topleft = addMatrices(p6, p4);
+    matrix topright = addMatrices(p2,p1);
+   
+    p5 = addMatrices(p5,p3,-1);
+    p7 = addMatrices(p7, p1);
+
+    matrix bottomright = addMatrices(p7, p5);
+    
     for (int i = 0; i < n; i++){
         for (int j = 0; j < n; j++){
             ans[i][j] = topleft[i][j];
@@ -153,12 +193,11 @@ matrix strassenMultiply(matrix &arr1, matrix &brr1){
             ans[i+n][j+n] = bottomright[i][j];
         }
     }
-
     return ans;
 }
 
 
-void generateFile(int d, const std::string &fileName) {
+void generateFile(int d, const char* &fileName) {
     int size = d; 
 
     // Seed the random number generator
@@ -257,11 +296,13 @@ int main(int argc, char *argv[]) {
     matrix A(dimen, std::vector<int>(dimen));
     matrix B(dimen, std::vector<int>(dimen));
 
+    generateFile(dimen, filename);
     generateMatrices(dimen, A, B, filename);
-    matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
-    for (int i = 0; i < dimen; i++) {
+    
+    //matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
+    /*for (int i = 0; i < dimen; i++) {
         std::cout << gradeSchoolResult[i][i] << std::endl;
-    }
+    }*/
 
 
     // std::vector<int> testSizes = {4, 8, 16, 32, 64, 128, 256};
@@ -277,18 +318,20 @@ int main(int argc, char *argv[]) {
     // std::cout << "Matrix B" << std::endl;
     // printMatrix(B);
 
-    // Timing Grade-School Multiplication
-    // auto start = std::chrono::high_resolution_clock::now();
-    // matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
-    // auto end = std::chrono::high_resolution_clock::now();
-    // std::chrono::duration<double> gradeSchoolTime = end - start;
-    // std::cout << "Grade-School Multiplication Time: " << gradeSchoolTime.count() << " seconds" << std::endl;
+    //Timing Grade-School Multiplication
+    auto start = std::chrono::high_resolution_clock::now();
+    matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> gradeSchoolTime = end - start;
+    std::cout << "Grade-School Multiplication Time: " << gradeSchoolTime.count() << " seconds" << std::endl;
 
     // // // Timing Strassen Multiplication
-    // start = std::chrono::high_resolution_clock::now();
-    // matrix strassenResult = strassenMultiply(A, B);
-    // end = std::chrono::high_resolution_clock::now();
-    // std::chrono::duration<double> strassenTime = end - start;
-    // std::cout << "Strassen Multiplication Time: " << strassenTime.count() << " seconds" << std::endl;
+    start = std::chrono::high_resolution_clock::now();
+    matrix strassenResult = strassenMultiply(A, B);
+    end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> strassenTime = end - start;
+    std::cout << "Strassen Multiplication Time: " << strassenTime.count() << " seconds" << std::endl;
+
+    assert(gradeSchoolResult == strassenResult);
 
 }
