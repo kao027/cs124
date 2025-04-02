@@ -8,7 +8,7 @@
 
 typedef std::vector<std::vector<int>> matrix;
 
-int CROSSOVER_POINT = 16;
+int CROSSOVER_POINT = 35;
 
 void printMatrix(matrix m){
     for (int r = 0; r < m.size(); r++){
@@ -60,13 +60,13 @@ matrix addMatrices(matrix &a, matrix &b, int sign = 1){ //
 }
 
 matrix gradeSchoolMultiply(matrix arr1, matrix brr1){
-    assert(arr1.size() == brr1.size());
-    assert(arr1[0].size() == brr1[0].size());
+    //assert(arr1.size() == brr1.size());
+    //assert(arr1[0].size() == brr1[0].size());
     int n = arr1.size();
     matrix ans(n, std::vector<int>(n));
 
-    for (int i = 0; i < n; i++){
-        for (int j = 0; j < n; j++){
+    for (int i = 0; i < arr1.size(); i++){
+        for (int j = 0; j < brr1[0].size(); j++){
             for (int k = 0; k < n; k++){
                 ans[i][j] += arr1[i][k] * brr1[k][j];
             }
@@ -88,7 +88,7 @@ matrix strassenMultiply(const matrix &arr1, const matrix &brr1){
     }
     
     if (n <= CROSSOVER_POINT) {
-        //std::cout << "hit crossover" << endl;
+        std::cout << "hit crossover" << endl;
         return gradeSchoolMultiply(arr1, brr1);
     }
 
@@ -226,56 +226,6 @@ void generateFile(int d, const char* &fileName) {
     outFile.close();
     std::cout << "Random 2D array has been written to " << fileName << std::endl;
 }
-
-/*void runTests(const std::vector<int>& dimens, std::vector<int> crossovers, const std::string& outputFilename) {
-    int upperBound = INT_MAX;
-    std::ofstream outfile(outputFilename);  
-    if (!outfile) {
-        std::cerr << "Error opening output file!\n";
-        return;
-    }
-
-    for (int cross : crossovers) {
-        bool fastStrassen = true;
-        outfile << "Testing with CROSSOVER_POINT = " << cross << "\n";
-
-        CROSSOVER_POINT = cross;
-
-        for (int dimen : dimens) {
-            generateFile(dimen, "test.txt");
-            matrix A(dimen, std::vector<int>(dimen));
-            matrix B(dimen, std::vector<int>(dimen));
-            generateMatrices(dimen, A, B, "test.txt");
-
-            outfile << "dimen: " << dimen << "x" << dimen << "\n";
-
-            auto start = std::chrono::high_resolution_clock::now();
-            matrix gradeSchoolResult = gradeSchoolMultiply(A, B);
-            auto end = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double> naiveTime = end - start;
-            outfile << "Grade-School Time: " << naiveTime.count() << " s\n";
-
-            start = std::chrono::high_resolution_clock::now();
-            matrix strassenResult = strassenMultiply(A, B);
-            end = std::chrono::high_resolution_clock::now();
-            std::chrono::duration<double> strassenTime = end - start;
-            outfile << "Strassen Time: " << strassenTime.count() << " s\n";
-            outfile << "---------------------------------\n";
-            if (strassenTime.count() > naiveTime.count()) {
-                fastStrassen = false;
-            }
-        }
-        if (fastStrassen) {
-            upperBound = cross;
-            break;
-        }
-    }
-
-    std::cout << "Upper Bound on Crossover: " << upperBound << std::endl;
-    outfile.close();  
-    std::cout << "Test results written to " << outputFilename << std::endl;
-}*/
-
 
 int main(int argc, char *argv[]) {
     if (argc != 4) {
