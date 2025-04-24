@@ -153,12 +153,30 @@ def run_algo(A, algo):
 
 
 def main(args):
-  if len(args)!=3:
-    print("Error: Use 'python3 flag algorithm inputfile'")
-  algo = int(args[1])
-  filename = args[2]
-  nums = generate_list(filename)
-  print(int(run_algo(nums,algo)))
+  if len(args)!=3 and len(args)!=1:
+    print("Error: Wrong number of argumens")
+  flag = int(args[0])
+  global max_iter
+  if (flag == 0):
+    max_iter = 10000
+    algo = int(args[1])
+    filename = args[2]
+    nums = generate_list(filename)
+    print(int(run_algo(nums,algo)))
+  elif (flag == 1):
+    max_iter = 25000
+    num_trials = 50
+    algo_codes = [0,1,2,3,11,12,13]
+    for code in algo_codes:
+      avg_residue = 0
+      for _ in range(num_trials):
+        nums = np.random.randint(1, 10**12, 100)
+        avg_residue += run_algo(nums, code)
+      avg_residue /= num_trials
+      print(f"Average Algorithm {code} Residue: {avg_residue}")
+
+  else:
+    print("Flag should either be 0 or 1")
 
 
 if __name__ == "__main__":
